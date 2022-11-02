@@ -1,0 +1,131 @@
+#include <stdio.h>
+
+#include <ctype.h>
+
+char stack[10000];
+
+int top = -1,n;
+
+void push(char x)
+
+{
+
+    stack[++top] = x;
+
+}
+
+char pop()
+
+{
+
+    return stack[top--];
+
+}
+
+int priority(char x)
+
+{
+
+    if(x == '(')
+
+        return 0;
+
+    if(x == '+' || x == '-')
+
+        return 1;
+
+    if(x == '*' || x == '/')
+
+        return 2;
+
+  	else 
+
+      	return -1;
+
+}
+
+void turn()
+
+{
+
+    char infix[10000];
+
+    char *sym, p;
+
+    gets(infix);
+
+    sym = infix;
+
+    
+
+    while(*sym != '\0')
+
+    {
+
+        if(isalnum(*sym))
+
+            printf("%c ",*sym);
+
+        else if(*sym == '(')
+
+            push(*sym);
+
+        else if(*sym == ')')
+
+        {
+
+            while((p = pop()) != '(')
+
+                printf("%c ", p);
+
+        }else if(*sym == ' '){
+
+         printf("");
+
+        }
+
+        else
+
+        {
+
+            while(priority(stack[top]) >= priority(*sym))
+
+                printf("%c ",pop());
+
+            push(*sym);
+
+        }
+
+        sym++;
+
+    }
+
+    
+
+    while(top > -1)
+
+    {
+
+        printf("%c ",pop());
+
+    }
+
+    printf("\n");
+
+}
+
+int main(){
+
+  scanf("%d ",&n);
+
+  int count=0;
+
+  while(count<n){
+
+  turn();
+
+  count++;
+
+  }
+
+}
