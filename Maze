@@ -1,3 +1,5 @@
+//input長寬&迷宮 output路徑
+
 #include <iostream>
 #define MAX_STACK_SIZE 1001
 #define SIZE 1001
