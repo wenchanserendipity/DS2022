@@ -1,3 +1,4 @@
+//共有兩個多項式 輸入第一個多項式有幾個數 N，並且依序輸入係數、指數，以此類推第二個多項式。output分別輸出指數以及其係數
 #include <iostream>
 #include <vector>
 using namespace std;
