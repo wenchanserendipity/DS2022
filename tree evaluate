@@ -1,0 +1,144 @@
+#include <iostream> 
+#include <string> 
+#include <cstring> 
+#include <queue> 
+#include <math.h> 
+
+using namespace std;
+
+int n;
+string m;
+vector<long> number;
+vector<char> treeinput;
+queue<struct node*> tree;
+//need struct
+struct node {
+	char data;
+	struct node* left;
+	struct node* right;
+};
+
+struct node* create(string value) {
+
+	struct node* position 
+		= (struct node*)malloc(sizeof(struct node));
+
+	if (value == "-1") {
+
+		position->data = ' ';
+		position->left = NULL;
+		position->right= NULL;
+	}
+
+	else {
+		position->data = value[0];
+		position->left = NULL;
+		position->right = NULL;
+	}
+	return position;
+}
+
+void maketree(string x) {
+	struct node *p = create(x);
+	tree.push(p);
+	struct node *y;
+	y = tree.front();
+
+	if (y->left == NULL) {
+		y->left = p;
+	}
+
+	else if (y->right == NULL) {
+		y->right = p;
+		tree.pop();
+	}
+}
+
+bool isDigit(char ch) {
+	return ch >= '0' && ch <= '9';
+}
+
+bool isOperator(char ch) {
+	return ch == '+' || ch == '-' || ch == '*' || ch == '/';
+}
+
+void order(struct node* node1) {
+
+	if (node1 != NULL) {
+
+		order(node1->left);
+		order(node1->right);
+		treeinput.push_back(node1->data);
+	}
+}
+
+void add(char x)
+{
+
+	if (isDigit(x)) {
+		number.push_back(x-'0');
+	}
+
+	else if (isOperator(x) && number.size() >= 2)
+	{
+		long b = number.back();
+		number.pop_back();
+		long a = number.back();
+		number.pop_back();
+		long ans = 0;
+
+		switch (x)
+		{
+		case '+':
+			ans = a + b;
+			break;
+		case '-':
+			ans = a - b;
+			break;
+		case '*':
+			ans = a * b;
+			break;
+		case '/':
+			ans = a / b;
+			break;
+		default:
+			break;
+		}
+		number.push_back(ans);
+	}
+	else {
+		return;
+	}
+}
+
+	int main(int argc, const char* argv[]) {
+
+		struct node* root = NULL;
+
+		int p;
+		cin >> n;
+		p = pow(2, n);
+
+		for (int i = 1; i < p; i++) {
+
+			if (i == 1) {
+				cin >> m;
+				root = create(m);
+				tree.push(root);
+
+			}
+
+			else {
+				cin >> m;
+				maketree(m);
+			}
+		}
+		order(root);
+
+		for (int i = 0; i < treeinput.size(); i++) {
+			add(treeinput[i]);
+		}
+		cout << number[0];
+		return 0;
+		
+	}
