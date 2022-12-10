@@ -1,0 +1,89 @@
+#include <iostream>
+#define infinity 500000
+#define MAX 2000
+int adj[MAX][MAX], n, m, spanning[MAX][MAX];
+
+int primsAlgo()
+{
+    int cost[MAX][MAX];
+    int u, v, minimumDistance, distance[MAX], from[MAX];
+    int visited[MAX], numEdges, minimumCost;
+	
+    
+  
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+        {
+            if (adj[i][j] == 0)
+                cost[i][j] = infinity;
+            else
+                cost[i][j] = adj[i][j];
+            spanning[i][j] = 0;
+        }
+
+  	distance[0] = 0;
+    visited[0] = 1;
+  
+    for (int i = 1; i < n; i++)
+    {
+        distance[i] = cost[0][i];
+        from[i] = 0;
+        visited[i] = 0;
+    }
+
+    minimumCost = 0;  
+    numEdges = n - 1; 
+
+    while (numEdges > 0)
+    {
+        
+        minimumDistance = infinity;
+        for (int i = 1; i < n; i++)
+            if (visited[i] == 0 && distance[i] < minimumDistance)
+            {
+                v = i;
+                minimumDistance = distance[i];
+            }
+
+        u = from[v];
+        spanning[u][v] = distance[v];
+        spanning[v][u] = distance[v];
+        numEdges--;
+        visited[v] = 1;
+
+        
+        for (int i = 1; i < n; i++)
+            if (visited[i] == 0 && cost[i][v] < distance[i])
+            {
+                distance[i] = cost[i][v];
+                from[i] = v;
+            }
+
+        minimumCost = minimumCost + cost[u][v];
+    }
+    return (minimumCost);
+}
+
+int main()
+{
+    int totalCost;
+    std::cin >> n >> m;
+
+    int i = 0, j = 0;
+    int a = 0, b = 0, co = 0;
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
+            adj[i][j] = 0;
+        }
+    }
+
+    for (i = 0; i < m; i++) {
+        std::cin >> a >> b >> co;
+        adj[a][b] = co;
+        adj[b][a] = co;
+    }
+
+    totalCost = primsAlgo();
+    std::cout << totalCost;
+    return 0;
+}
