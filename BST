@@ -1,0 +1,172 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+struct node {
+    int data;
+    struct node* left, * right;
+};
+struct node* newNode(int key)
+{
+    struct node* temp = (struct node*)malloc(sizeof(struct node));
+    temp->data = key;
+    temp->left = NULL;
+    temp->right = NULL;
+    return temp;
+}
+
+//刪除節點時使用的函數
+struct node* minValueNode(struct node* node)
+{
+    struct node* current = node;
+    while (current && current->right != NULL) {
+        current = current->right;
+    }
+    return current;
+}
+
+//delete指令執行刪除節點
+struct node* deleteNode(struct node* root, int key)
+{
+    if (root == NULL) {
+        cout << "cannot delete" << "\n";
+        return root;
+    }
+
+    if (key < root->data) {
+        root->left = deleteNode(root->left, key);
+    }
+    else if (key > root->data) {
+        root->right = deleteNode(root->right, key);
+    }
+    else if (key == root->data) {
+        if (root->left == NULL && root->right == NULL) {
+            return NULL;
+        }
+        else if (root->left == NULL) {
+            struct node* temp = root->right;
+            free(root);
+            return temp;
+        }
+        else if (root->right == NULL) {
+            struct node* temp = root->left;
+            free(root);
+            return temp;
+        }
+
+        struct node* temp = minValueNode(root->left);
+        root->data = temp->data;
+        root->left = deleteNode(root->left, temp->data);
+    }
+    return root;
+}
+
+
+//插入新節點
+struct node* insert(struct node* root, int key)
+{
+
+    if (root == NULL) {
+        return newNode(key);
+    }
+
+    if (key < root->data) {
+        root->left = insert(root->left, key);
+    }
+    else {
+        root->right = insert(root->right, key);
+    }
+    return root;
+}
+
+//尋找時使用的函數
+void saveNodes(struct node* root, vector<struct node*>& node1)
+{
+    if (root == NULL) {
+        return;
+    }
+    saveNodes(root->left, node1);
+    node1.push_back(root);
+    saveNodes(root->right, node1);
+}
+
+//尋找指定節點
+int search(struct node* root, int key)
+{
+    vector<struct node*> node1;
+    saveNodes(root, node1);
+    return node1[key - 1]->data;
+}
+
+
+void printLevel(node* root, int level)
+{
+    if (root == NULL) {
+        return;
+    }
+    if (level == 1) {
+        cout << root->data << " ";
+    }
+    else if (level > 1) {
+        printLevel(root->left, level - 1);
+        printLevel(root->right, level - 1);
+    }
+}
+
+//處理大小
+int height(node* node)
+{
+    if (node == NULL) {
+        return 0;
+    }
+    else {
+        int lefth = height(node->left);
+        int righth = height(node->right);
+        return max(lefth, righth) + 1;
+    }
+}
+
+void traversal(node* root)
+{
+    int h = height(root);
+    int i;
+    for (i = 1; i <= h; i++) {
+        printLevel(root, i);
+    }
+}
+
+
+int main()
+{
+    struct node* root = NULL;
+    int count = 0;
+    while (count < 1000) {
+        int p = 0;
+        string m;
+        cin >> m;
+        if (m == "insert") {
+            cin >> p;
+            root = insert(root, p);
+        }
+        else if (m == "delete") {
+            cin >> p;
+            root = deleteNode(root, p);
+        }
+        else if (m == "search") {
+            cin >> p;
+            cout << search(root, p) << "\n";
+        }
+        else if (m == "height") {
+            cout << height(root) << "\n";
+        }
+        else if (m == "traversal") {
+            traversal(root);
+            break;
+        }
+        //設定各種對應指令
+        count++;
+
+    }
+
+    return 0;
+}
