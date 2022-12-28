@@ -1,0 +1,88 @@
+#include <iostream>
+#include <queue>
+#include <algorithm>
+#include <string>
+using namespace std;
+int counter=0;
+
+struct student{
+    string name;
+    int grade;
+};
+vector<student> pivotnumber;
+
+void quickSort(int start, int end,student *s){
+  //依照講義改寫
+  
+    if (start >= end){
+        return;
+    }
+    
+    int pivot=start;
+    int i = start, j = end+1;
+    do{
+        i++;
+        j--;
+        do{
+            if(s[i].grade < s[pivot].grade){
+                        i++;
+            }
+       		else if(s[i].grade == s[pivot].grade){
+                if(s[i].name.compare(s[pivot].name) > 0){
+                            i++;
+                        }
+                        else {
+                break;
+                }
+            }
+    
+        }
+      	while(s[i].grade <= s[pivot].grade);
+  
+                do{
+                    if(s[j].grade > s[pivot].grade){
+                        j--;
+                    }
+                    else if (s[j].grade == s[pivot].grade){
+                        if(s[j].name.compare(s[pivot].name) < 0){
+                            j--;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+
+                }while(s[j].grade>= s[pivot].grade);
+
+                if(i<j){
+                    swap(s[i],s[j]);
+                }
+                
+            }while(i < j);
+    swap(s[pivot], s[j]);
+    counter++;
+    cout << "The index of the " << counter<< "-th pivot is " << j << "." << endl;
+  
+    quickSort(start, j-1,s);
+    quickSort(j+1, end,s);
+}
+ 
+int main()
+{
+    int n;
+    cin>>n;
+  //先輸入一共幾筆資料
+    student s[n];
+    for(int i=0;i<n;i++){
+        cin>>s[i].name;
+        cin>>s[i].grade;
+    }
+    //依序輸入名字和成績
+    quickSort(0,n-1,s);
+    //做sort
+    for (int i = 0; i < n; i++) {
+        cout << s[i].name << " "<<s[i].grade<<"\n";
+    }
+ //輸出結果
+    return 0;
+}
