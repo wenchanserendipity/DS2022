@@ -1,0 +1,62 @@
+#include <iostream>
+#include <climits>
+#define MAX_VERTICES 100
+using namespace std;
+
+int choose(int distance[], int n, short int found[]){
+    int i, min, minpos;
+    min = INT_MAX;
+    minpos = -1;
+    for(i = 0; i < n; i++){
+        if(distance[i] <= min && !found[i]){
+            min = distance[i];
+            minpos = i;
+        }
+    }
+    return minpos;
+}
+
+void shortestpath(int v, int cost[][MAX_VERTICES], int n, int end){
+    int i, u, w;
+    int distance[n]; short int found[n];
+  
+    for(i = 0; i < n; i++){
+        found[i] = false;
+        distance[i] = cost[v][i];
+    }
+  
+    found[v] = true;
+    distance[v] = 0;
+  
+    for(i = 0; i < n-2; i++){
+        u = choose(distance, n, found);
+        found[u] = true;
+        for(w = 0; w < n; w++){
+            if(!found[w]){
+                // cout << "du:" << distance[u] << "c:" << cost[u][w] << "dw:" << distance[w] << endl;
+                if(distance[u] + cost[u][w] < distance[w])
+                    distance[w] = distance[u] + cost[u][w];
+            }
+        }
+    }
+    cout << distance[end];
+}//照講義打
+
+int main()
+{
+    int n, start, end;
+    cin >> n >> start >> end;
+    int cost[n][MAX_VERTICES];
+  
+    for(int i = 0; i < n; i++)
+        for(int j = 0; j < n; j++){
+            int v;
+            cin >> v;
+            if(v == 0)
+                v = 9999999;
+            cost[i][j] = v;
+        }
+    shortestpath(start, cost, n, end);
+  //將需要在函式內用到的變數傳過去
+    return 0;
+}
